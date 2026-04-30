@@ -53,11 +53,11 @@ KeepOn is designed for time-bound tasks that should keep resurfacing until they 
 ## Screenshots And Demo
 
 
-|:--:|:--:|
+
 | <img src="KeepOn/screenshots%20%26%20demo/screen1.png" alt="KeepOn screenshot 1" width="260"> | <img src="KeepOn/screenshots%20%26%20demo/screen2.png" alt="KeepOn screenshot 2" width="260"> |
 
 
-|:--:|:--:|
+
 | <img src="KeepOn/screenshots%20%26%20demo/screen3.png" alt="KeepOn screenshot 3" width="260"> | <img src="KeepOn/screenshots%20%26%20demo/screen4.png" alt="KeepOn screenshot 4" width="260"> |
 
 **Demo video:** [Watch demo.mp4](Keepon/screenshots%20%26%20demo/demo.mp4)
