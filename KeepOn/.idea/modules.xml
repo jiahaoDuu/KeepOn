@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/KeepOn.iml" filepath="$PROJECT_DIR$/.idea/KeepOn.iml" />
+      <module fileurl="file://$PROJECT_DIR$/keepon.iml" filepath="$PROJECT_DIR$/keepon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/keepon_android.iml" filepath="$PROJECT_DIR$/android/keepon_android.iml" />
     </modules>
   </component>
 </project>
