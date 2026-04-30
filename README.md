@@ -62,7 +62,7 @@ KeepOn is designed for time-bound tasks that should keep resurfacing until they 
 
 | Demo 1 | Demo 2 |
 |:--:|:--:|
-| <img src="KeepOn/screenshots%20%26%20demo/demo1.gif" alt="KeepOn demo 1" width="260"> | <img src="KeepOn/screenshots%20%26%20demo/demo1.gif" alt="KeepOn demo 2" width="260"> |
+| <img src="KeepOn/screenshots%20%26%20demo/demo1.gif" alt="KeepOn demo 1" width="260"> | <img src="KeepOn/screenshots%20%26%20demo/demo2.gif" alt="KeepOn demo 2" width="260"> |
 
 **Demo video:** [Watch demo.mp4](KeepOn/screenshots%20%26%20demo/demo.mp4)
 
