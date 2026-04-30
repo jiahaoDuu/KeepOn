@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="KeepOn is a Flutter reminder app that keeps unfinished tasks visible through local notifications, quiet hours, and activity-aware timing."
+    >
+    <title>KeepOn | Task Reminder App</title>
+    <style>
+      :root {
+        --ink: #17212b;
+        --muted: #5b6673;
+        --paper: #fffaf2;
+        --panel: #ffffff;
+        --line: #e5ded2;
+        --mint: #d9f5e8;
+        --mint-strong: #2f9b72;
+        --coral: #f47b62;
+        --sun: #f5c542;
+        --blue: #396eb0;
+        --shadow: 0 18px 44px rgba(23, 33, 43, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        line-height: 1.6;
+      }
+
+      img,
+      video {
+        display: block;
+        max-width: 100%;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .site-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 16px clamp(18px, 4vw, 54px);
+        background: rgba(255, 250, 242, 0.88);
+        border-bottom: 1px solid rgba(229, 222, 210, 0.9);
+        backdrop-filter: blur(16px);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-width: max-content;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .brand img {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: clamp(10px, 2vw, 22px);
+        color: var(--muted);
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+      }
+
+      .hero {
+        position: relative;
+        min-height: 88vh;
+        display: grid;
+        align-items: end;
+        overflow: hidden;
+        padding: 110px clamp(18px, 5vw, 72px) 46px;
+        color: #fff;
+        background-image:
+          linear-gradient(90deg, rgba(16, 26, 33, 0.88), rgba(16, 26, 33, 0.46) 58%, rgba(16, 26, 33, 0.16)),
+          url("KeepOn/screenshots%20%26%20demo/screen1.png");
+        background-position: center;
+        background-size: cover;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0;
+        height: 34%;
+        background: linear-gradient(180deg, rgba(255, 250, 242, 0), var(--paper));
+        pointer-events: none;
+      }
+
+      .hero-inner {
+        position: relative;
+        z-index: 2;
+        width: min(1120px, 100%);
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+        gap: clamp(28px, 6vw, 80px);
+        align-items: end;
+      }
+
+      .hero-copy {
+        max-width: 760px;
+        padding-bottom: 46px;
+      }
+
+      .eyebrow {
+        margin: 0 0 14px;
+        color: var(--mint);
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        margin-bottom: 16px;
+        font-size: clamp(3rem, 7vw, 6.8rem);
+        line-height: 0.92;
+        letter-spacing: 0;
+      }
+
+      .hero-subtitle {
+        max-width: 620px;
+        margin-bottom: 28px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: clamp(1.05rem, 2vw, 1.35rem);
+      }
+
+      .hero-actions,
+      .card-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .button {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 10px 16px;
+        border: 1px solid rgba(255, 255, 255, 0.38);
+        border-radius: 8px;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.12);
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .button.primary {
+        border-color: var(--coral);
+        background: var(--coral);
+      }
+
+      .phone-stack {
+        position: relative;
+        min-height: 510px;
+      }
+
+      .phone {
+        position: absolute;
+        width: min(280px, 72vw);
+        padding: 10px;
+        border-radius: 30px;
+        background: #111820;
+        box-shadow: var(--shadow);
+      }
+
+      .phone img {
+        width: 100%;
+        border-radius: 22px;
+      }
+
+      .phone.front {
+        right: 0;
+        bottom: 0;
+      }
+
+      .phone.back {
+        right: 92px;
+        bottom: 86px;
+        transform: rotate(-7deg);
+        opacity: 0.9;
+      }
+
+      main {
+        position: relative;
+        z-index: 3;
+      }
+
+      section {
+        padding: clamp(56px, 9vw, 104px) clamp(18px, 5vw, 72px);
+      }
+
+      .section-inner {
+        width: min(1120px, 100%);
+        margin: 0 auto;
+      }
+
+      .section-head {
+        max-width: 760px;
+        margin-bottom: 30px;
+      }
+
+      h2 {
+        margin-bottom: 12px;
+        font-size: clamp(2rem, 4vw, 3.4rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      h3 {
+        margin-bottom: 8px;
+        font-size: 1.05rem;
+      }
+
+      .lead {
+        color: var(--muted);
+        font-size: 1.08rem;
+      }
+
+      .feature-grid,
+      .tech-grid,
+      .process-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        min-height: 100%;
+        padding: 22px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .card p {
+        margin-bottom: 0;
+        color: var(--muted);
+      }
+
+      .tag {
+        display: inline-flex;
+        margin-bottom: 16px;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: var(--mint);
+        color: #176348;
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+
+      .showcase {
+        background: #fff;
+      }
+
+      .media-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 22px;
+        align-items: start;
+      }
+
+      .video-frame,
+      .gif-frame,
+      .screenshot-tile {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #111820;
+        box-shadow: 0 12px 30px rgba(23, 33, 43, 0.1);
+      }
+
+      .video-frame video {
+        width: 100%;
+        max-height: 760px;
+        object-fit: contain;
+        background: #111820;
+      }
+
+      .gif-column {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .caption {
+        padding: 12px 14px;
+        color: var(--muted);
+        background: #fff;
+        font-size: 0.9rem;
+      }
+
+      .journey {
+        background: #f8efe1;
+      }
+
+      .timeline {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .step {
+        min-height: 180px;
+        padding: 18px;
+        border-left: 4px solid var(--coral);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      .step strong {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--blue);
+        font-size: 0.86rem;
+      }
+
+      .step p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .screens {
+        background: #fff;
+      }
+
+      .screens-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .screenshot-tile {
+        background: #f7f3ec;
+      }
+
+      .screenshot-tile img {
+        width: 100%;
+      }
+
+      .data-band {
+        background: var(--mint);
+      }
+
+      .data-layout {
+        display: grid;
+        grid-template-columns: 0.85fr 1.15fr;
+        gap: 28px;
+        align-items: center;
+      }
+
+      .data-points {
+        display: grid;
+        gap: 14px;
+      }
+
+      .data-point {
+        padding: 18px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.74);
+      }
+
+      .data-point p {
+        margin-bottom: 0;
+        color: var(--muted);
+      }
+
+      .future {
+        background: #fff;
+      }
+
+      .future-list {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .future-item {
+        padding: 18px;
+        border-radius: 8px;
+        background: #f7f3ec;
+        border-top: 5px solid var(--sun);
+        font-weight: 800;
+      }
+
+      footer {
+        padding: 34px clamp(18px, 5vw, 72px);
+        color: rgba(255, 255, 255, 0.84);
+        background: #17212b;
+      }
+
+      .footer-inner {
+        width: min(1120px, 100%);
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+      }
+
+      @media (max-width: 920px) {
+        .hero-inner,
+        .data-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-copy {
+          padding-bottom: 0;
+        }
+
+        .phone-stack {
+          min-height: 380px;
+        }
+
+        .phone.back {
+          right: 148px;
+          bottom: 56px;
+        }
+
+        .feature-grid,
+        .tech-grid,
+        .process-grid,
+        .timeline,
+        .screens-grid,
+        .future-list {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        .site-nav {
+          position: static;
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .nav-links {
+          width: 100%;
+          overflow-x: auto;
+          padding-bottom: 4px;
+        }
+
+        .hero {
+          min-height: auto;
+          padding-top: 48px;
+        }
+
+        .hero-inner {
+          gap: 18px;
+        }
+
+        .phone-stack {
+          min-height: 330px;
+        }
+
+        .phone {
+          width: 210px;
+        }
+
+        .phone.back {
+          right: 92px;
+          bottom: 48px;
+        }
+
+        .feature-grid,
+        .tech-grid,
+        .process-grid,
+        .timeline,
+        .screens-grid,
+        .gif-column,
+        .future-list {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-inner {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a class="brand" href="#top">
+        <img src="KeepOn/assets/app_icon.png" alt="KeepOn app icon">
+        <span>KeepOn</span>
+      </a>
+      <div class="nav-links">
+        <a href="#demo">Demo</a>
+        <a href="#journey">Journey</a>
+        <a href="#data">Data</a>
+        <a href="#technology">Technology</a>
+        <a href="#future">Future</a>
+      </div>
+    </nav>
+
+    <header id="top" class="hero">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">CASA0015 Mobile Systems &amp; Interactions</p>
+          <h1>KeepOn</h1>
+          <p class="hero-subtitle">
+            A Flutter reminder app for time-bound tasks that should keep
+            resurfacing until they are finished or expired.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#demo">Watch demo</a>
+            <a class="button" href="#technology">View technical integration</a>
+          </div>
+        </div>
+        <div class="phone-stack" aria-label="KeepOn app screenshots">
+          <div class="phone back">
+            <img src="KeepOn/screenshots%20%26%20demo/screen2.png" alt="KeepOn task creation screen">
+          </div>
+          <div class="phone front">
+            <img src="KeepOn/screenshots%20%26%20demo/screen1.png" alt="KeepOn home screen">
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="overview">
+        <div class="section-inner">
+          <div class="section-head">
+            <p class="eyebrow">Application Outline</p>
+            <h2>Built to keep unfinished work visible.</h2>
+            <p class="lead">
+              KeepOn focuses on the gap between writing a task down and actually
+              returning to it. The app combines a lightweight task list with
+              repeated local reminders, quiet hours, progress feedback, and
+              simple activity-aware timing.
+            </p>
+          </div>
+          <div class="feature-grid">
+            <article class="card">
+              <span class="tag">Focus</span>
+              <h3>Next task at a glance</h3>
+              <p>
+                The home screen highlights the most urgent active task with a
+                remaining-time label and progress bar.
+              </p>
+            </article>
+            <article class="card">
+              <span class="tag">Reminders</span>
+              <h3>Persistent local alerts</h3>
+              <p>
+                Notifications are scheduled while a task is active and stop when
+                the user completes or deletes the task.
+              </p>
+            </article>
+            <article class="card">
+              <span class="tag">Control</span>
+              <h3>Quiet hours and settings</h3>
+              <p>
+                Users can adjust reminder intervals, notification behaviour, and
+                rest periods without leaving the app.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="demo" class="showcase">
+        <div class="section-inner">
+          <div class="section-head">
+            <p class="eyebrow">Video And GIF Showcase</p>
+            <h2>The core workflow in motion.</h2>
+            <p class="lead">
+              The demo shows launch, task creation, reminder settings, and task
+              completion, matching the presentation requirement for a short app
+              walkthrough.
+            </p>
+          </div>
+          <div class="media-grid">
+            <figure class="video-frame">
+              <video controls poster="KeepOn/screenshots%20%26%20demo/screen1.png">
+                <source src="KeepOn/screenshots%20%26%20demo/demo.mp4" type="video/mp4">
+              </video>
+              <figcaption class="caption">Demo video: launch, create, adjust settings, complete.</figcaption>
+            </figure>
+            <div class="gif-column">
+              <figure class="gif-frame">
+                <img src="KeepOn/screenshots%20%26%20demo/demo1.gif" alt="KeepOn animated demo showing task creation">
+                <figcaption class="caption">Creating a task and returning to the active list.</figcaption>
+              </figure>
+              <figure class="gif-frame">
+                <img src="KeepOn/screenshots%20%26%20demo/demo2.gif" alt="KeepOn animated demo showing settings and completion">
+                <figcaption class="caption">Changing settings and marking work complete.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="journey" class="journey">
+        <div class="section-inner">
+          <div class="section-head">
+            <p class="eyebrow">UX Journey</p>
+            <h2>From intention to completion.</h2>
+            <p class="lead">
+              The interaction model was designed around a short loop: capture
+              the task, keep it visible, remind at useful moments, then remove
+              it from attention when it is done.
+            </p>
+          </div>
+          <div class="timeline">
+            <article class="step">
+              <strong>01 Launch</strong>
+              <p>A short branded splash screen introduces the app before moving to the task list.</p>
+            </article>
+            <article class="step">
+              <strong>02 Capture</strong>
+              <p>The user adds title, notes, start time, and end time for a time-bound task.</p>
+            </article>
+            <article class="step">
+              <strong>03 Prioritise</strong>
+              <p>The home screen surfaces active tasks and visually signals urgency.</p>
+            </article>
+            <article class="step">
+              <strong>04 Remind</strong>
+              <p>Local notifications repeat while the task remains active and incomplete.</p>
+            </article>
+            <article class="step">
+              <strong>05 Adjust</strong>
+              <p>Settings let the user choose reminder interval, quiet hours, and notification state.</p>
+            </article>
+            <article class="step">
+              <strong>06 Finish</strong>
+              <p>Completion removes the task from the active list and cancels future reminders.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="screens">
+        <div class="section-inner">
+          <div class="section-head">
+            <p class="eyebrow">Interface Screens</p>
+            <h2>Simple screens for repeated everyday use.</h2>
+          </div>
+          <div class="screens-grid">
+            <figure class="screenshot-tile">
+              <img src="KeepOn/screenshots%20%26%20demo/screen1.png" alt="KeepOn active task list">
+              <figcaption class="caption">Home and active tasks</figcaption>
+            </figure>
+            <figure class="screenshot-tile">
+              <img src="KeepOn/screenshots%20%26%20demo/screen2.png" alt="KeepOn task editor">
+              <figcaption class="caption">Task creation</figcaption>
+            </figure>
+            <figure class="screenshot-tile">
+              <img src="KeepOn/screenshots%20%26%20demo/screen3.png" alt="KeepOn reminder settings">
+              <figcaption class="caption">Reminder settings</figcaption>
+            </figure>
+            <figure class="screenshot-tile">
+              <img src="KeepOn/screenshots%20%26%20demo/screen4.png" alt="KeepOn notification example">
+              <figcaption class="caption">Notification behaviour</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section id="data" class="data-band">
+        <div class="section-inner data-layout">
+          <div>
+            <p class="eyebrow">Data Handling</p>
+            <h2>Local-first by design.</h2>
+            <p class="lead">
+              KeepOn stores task and settings data locally on the user's device.
+              The app does not require an account or remote server to operate,
+              which keeps the data model small and transparent.
+            </p>
+          </div>
+          <div class="data-points">
+            <article class="data-point">
+              <h3>Task data</h3>
+              <p>Title, optional description, start time, end time, completion state, and task identifiers are persisted with Hive.</p>
+            </article>
+            <article class="data-point">
+              <h3>Preference data</h3>
+              <p>Reminder interval, notification switch, and quiet-hour preferences are saved with SharedPreferences.</p>
+            </article>
+            <article class="data-point">
+              <h3>Sensor data</h3>
+              <p>Accelerometer readings are used for live stationary detection and are not stored as a long-term personal data record.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="technology">
+        <div class="section-inner">
+          <div class="section-head">
+            <p class="eyebrow">Technical Integration</p>
+            <h2>APIs and services that enhance the app.</h2>
+            <p class="lead">
+              KeepOn uses Flutter plugins and device APIs to move beyond a
+              static task list and support reminders that respond to time,
+              settings, and device context.
+            </p>
+          </div>
+          <div class="tech-grid">
+            <article class="card">
+              <span class="tag">Notifications</span>
+              <h3>flutter_local_notifications</h3>
+              <p>Schedules repeated task reminders locally and cancels them when tasks are no longer active.</p>
+            </article>
+            <article class="card">
+              <span class="tag">Time</span>
+              <h3>timezone</h3>
+              <p>Supports consistent reminder scheduling by calculating notification times with timezone-aware values.</p>
+            </article>
+            <article class="card">
+              <span class="tag">Sensors</span>
+              <h3>sensors_plus</h3>
+              <p>Reads accelerometer data so the app can detect stationary device moments for activity-aware timing.</p>
+            </article>
+            <article class="card">
+              <span class="tag">Storage</span>
+              <h3>Hive</h3>
+              <p>Stores task records locally with a small, fast persistence layer suited to offline-first use.</p>
+            </article>
+            <article class="card">
+              <span class="tag">Settings</span>
+              <h3>SharedPreferences</h3>
+              <p>Persists lightweight user preferences such as quiet hours and notification options.</p>
+            </article>
+            <article class="card">
+              <span class="tag">Architecture</span>
+              <h3>Riverpod services</h3>
+              <p>Separates task state, notification logic, sensor logic, storage, and settings into maintainable modules.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-inner">
+          <div class="section-head">
+            <p class="eyebrow">Design Process</p>
+            <h2>Designed from problem framing to implementation.</h2>
+          </div>
+          <div class="process-grid">
+            <article class="card">
+              <span class="tag">Problem</span>
+              <h3>Tasks disappear from attention</h3>
+              <p>The project began with the observation that dismissed reminders often fail to keep unfinished work present.</p>
+            </article>
+            <article class="card">
+              <span class="tag">Storyboarding</span>
+              <h3>A short repeatable loop</h3>
+              <p>The storyboard centred on create, resurface, adjust, and complete, keeping the app narrow and usable.</p>
+            </article>
+            <article class="card">
+              <span class="tag">Wireframes</span>
+              <h3>Home first</h3>
+              <p>The interface prioritised a clear home screen, a focused editor, and settings that directly affect reminders.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="future" class="future">
+        <div class="section-inner">
+          <div class="section-head">
+            <p class="eyebrow">Future Improvements</p>
+            <h2>What I would improve with more time.</h2>
+          </div>
+          <div class="future-list">
+            <div class="future-item">Calendar integration for deadline context</div>
+            <div class="future-item">Richer reminder rules for different task types</div>
+            <div class="future-item">Accessibility testing across screen sizes and contrast modes</div>
+            <div class="future-item">Optional cloud backup while preserving local-first behaviour</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <strong>KeepOn</strong>
+        <span>Final App Presentation Landing Page</span>
+      </div>
+    </footer>
+  </body>
+</html>
